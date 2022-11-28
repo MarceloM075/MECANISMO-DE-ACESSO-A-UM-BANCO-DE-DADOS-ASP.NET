@@ -1,0 +1,72 @@
+﻿@model Pessoa
+
+@{
+    ViewData["Title"] = "Busca por CPF";
+    string cpf = "";
+}
+
+
+<div class="text-center">
+    <br />
+    <table class="table"> 
+            @if (Model != null && Model.Id > 0)
+            {
+                string? cpfString = Model.Cpf.ToString();
+                string? cepString = Model.Endereco.Cep.ToString();
+
+                <thead>
+                    <tr>
+                        <th scope="col">Nome</th>
+                        <th scope="col">CPF</th>
+                        <th scope="col">Endereço</th>
+                        <th scope="col">CEP</th>
+                        <th scope="col">Telefone</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                <tr>
+                    <td>@Model.Nome</td>
+                    <td>
+                        @if (cpfString.Length == 11)
+                        {
+                            @cpfString;
+                        }
+                        else if (cpfString.Length < 11)
+                        {
+                            string cpfFormatacao = "0" + cpfString;
+                            @cpfFormatacao;
+                        }
+                    </td>
+                    <td>@Model.Endereco.Estado - @Model.Endereco.Cidade - @Model.Endereco.Bairro - @Model.Endereco.Logradouro, @Model.Endereco.Numero</td>
+                    <td>
+                        @if (cepString.Length == 8)
+                        {
+                            @cepString;
+                        }
+                        else if (cepString.Length < 8)
+                        {
+                            string cepFormatacao = "0" + cepString;
+                            @cepFormatacao;
+                        }
+                    </td>
+                    <td>@Model.Telefone.Ddd @Model.Telefone.Numero</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-primary" asp-route-id="@Model.Id" asp-controller="Pessoas" asp-action="Editar">Editar</a>
+                            <a class="btn btn-danger" asp-route-id="@Model.Id" asp-controller="Pessoas" asp-action="Apagar">Apagar</a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            }
+            else
+            {
+                 <span class="text-danger" style="font-size: 1.5rem; font-weight: bold;">Pessoa não encontrada!</span>
+            }
+    </table>
+</div>
+<div class="col-12 mt-5">
+    <a class="btn btn-secondary" role="button" asp-controller="Pessoas" asp-action="Index">Voltar</a>
+</div>

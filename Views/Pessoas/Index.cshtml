@@ -1,0 +1,87 @@
+﻿@model List<Pessoa>
+
+@{
+    string cpf = "";
+    
+    ViewData["Title"] = "Lista de pessoas";
+}
+
+
+<div class="row justify-content-between">
+    <div class="col-md-3 mt-3">
+        <a class="btn btn-success" role="button" asp-controller="Pessoas" asp-action="Criar"><span style="font-size: 1.2rem; font-weight: bold;">+</span> Adicionar pessoa</a>
+    </div>
+    <div class="col-md-4">
+        <form method="get" action="../Views/Pessoas/Buscar">
+            <label class="form-label">Pesquisar por CPF:</label>
+            <div class="input-group">
+                <input type="search" name="cpf" for="cpf" class="form-control" placeholder="Digite o CPF...">
+                <input class="btn btn-secondary input-group-text" type="submit" value="Pesquisar" asp-controller="Pessoas" asp-action="Buscar">
+            </div>
+        </form>
+    </div>
+</div>
+<br />
+<hr />
+<div class="text-center">
+    <br />
+    <h1 class="display-4">Lista de pessoas</h1>
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nome</th>
+                <th scope="col">CPF</th>
+                <th scope="col">Endereço</th>
+                <th scope="col">CEP</th>
+                <th scope="col">Telefone</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(Model != null && Model.Any())
+            {
+                int i = 1;
+                foreach (Pessoa pessoa in Model)
+                {
+                    string? cpfString = pessoa.Cpf.ToString();
+                    string? cepString = pessoa.Endereco.Cep.ToString();
+                    
+                    <tr>
+                        <th scope="row">@i</th>
+                        <td>@pessoa.Nome</td>
+                        <td>@if (cpfString.Length == 11 )
+                            {
+                                @cpfString;
+                            }
+                            else if(cpfString.Length < 11)
+                            {
+                                string cpfFormatacao = "0" + cpfString;
+                                @cpfFormatacao;
+                            }
+                        </td>
+                        <td>@pessoa.Endereco.Estado - @pessoa.Endereco.Cidade - @pessoa.Endereco.Bairro - @pessoa.Endereco.Logradouro, @pessoa.Endereco.Numero</td>
+                        <td>@if (cepString.Length == 8 )
+                            {
+                                @cepString;
+                            }
+                            else if(cepString.Length < 8)
+                            {
+                                string cepFormatacao = "0" + cepString;
+                                @cepFormatacao;
+                            }</td>
+                        <td>@pessoa.Telefone.Ddd @pessoa.Telefone.Numero</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a class="btn btn-primary" asp-route-id="@pessoa.Id" asp-controller="Pessoas" asp-action="Editar">Editar</a>
+                                <a class="btn btn-danger" asp-controller="Pessoas" asp-action="Apagar" asp-route-id="@pessoa.Id">Apagar</a>
+                            </div>
+                        </td>
+                    </tr>
+                    i++;
+                }
+            }
+        </tbody>
+    </table>
+</div>
